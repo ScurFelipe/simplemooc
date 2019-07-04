@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class PasswordReset(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name='Usuário',
-        related_name='resets', on_delete=models.PROTECT
+        related_name='resets', on_delete=models.CASCADE
     )
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Usuário', on_delete=models.PROTECT)
     key = models.CharField('Chave', max_length=100, unique=True)
