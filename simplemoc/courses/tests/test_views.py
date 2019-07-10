@@ -4,7 +4,7 @@ from django.test.client import Client
 from django.urls import reverse
 from django.conf import settings
 
-from .models import Course
+from simplemoc.courses.models import Course
 
 
 class ContactCourseTestCase(TestCase):
@@ -30,7 +30,7 @@ class ContactCourseTestCase(TestCase):
         self.assertFormError(response, 'form', 'message', 'Este campo é obrigatório')
 
     def test_contact_form_success(self):
-        data = {'name': 'Fulano de Tal', 'email': 'sdmin@admin.com', 'message': 'Oi'}
+        data = {'name': 'Fulano de Tal', 'email': 'admin@admin.com', 'message': 'Oi'}
         client = Client()
         path = reverse('courses:details', args=[self.course.slug])
         response = client.post(path, data)

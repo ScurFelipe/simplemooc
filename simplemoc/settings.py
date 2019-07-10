@@ -134,7 +134,7 @@ DEFAULT_FROM_EMAIL = 'The Gambiarra <thegambiarra2@gmail.com>'
 # EMAIL_HOST_PASSWORD = 'PythonTGG2'
 # EMAIL_PORT = 587
 
-CONTACT_EMAIL = 'thegambiarra2@gmail.com'
+CONTACT_EMAIL = 'admin@admin.com'
 
 # Auth
 LOGIN_URL = "accounts:login"
