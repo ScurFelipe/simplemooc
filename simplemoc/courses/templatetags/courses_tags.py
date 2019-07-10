@@ -1,6 +1,8 @@
 from django.template import Library
-from simplemoc.courses.models import Enrollment
+
 register = Library()
+
+from simplemoc.courses.models import Enrollment
 
 
 @register.inclusion_tag('courses/templatetags/my_courses.html')

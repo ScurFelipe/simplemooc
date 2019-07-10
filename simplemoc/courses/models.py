@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
@@ -13,7 +15,6 @@ class CourseManager(models.Manager):
 
 
 class Course(models.Model):
-
     name = models.CharField('Nome', max_length=255)
     slug = models.SlugField('Atalho')
     description = models.TextField('Descrição', blank=True)
@@ -30,7 +31,11 @@ class Course(models.Model):
     def get_absolute_url(self):
         # from django.urls import reverse
         # return reverse('courses.view.details', args=[str(self.slug)])
-        return '/cursos/%s' %self.slug
+        return '/cursos/%s' % self.slug
+
+    def release_lessons(self):
+        today = datetime.now().date()
+        return self.lessons.filter(release_date__lte=today)
 
     class Meta:
         verbose_name = 'Curso'
@@ -43,13 +48,19 @@ class Lesson(models.Model):
     description = models.TextField('Descrição', blank=True)
     number = models.IntegerField('Número (ordem)', blank=True, default=0)
     release_date = models.DateField('Data de Liberação', blank=True, null=True)
-    course = models.ForeignKey(Course, verbose_name='Curso', related_name='lesson', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, verbose_name='Curso', related_name='lessons', on_delete=models.CASCADE)
 
     created_at = models.DateTimeField('Criado em', auto_now_add=True)
     update_at = models.DateTimeField('Atualizado em', auto_now=True)
 
     def __str__(self):
         return self.name
+
+    def is_available(self):
+        if self.release_date:
+            today = datetime.now().date()
+            return self.release_date <= today
+        return False
 
     class Meta:
         verbose_name = 'Aula'
@@ -108,7 +119,6 @@ class Enrollment(models.Model):
 
 
 class Announcement(models.Model):
-
     course = models.ForeignKey(Course, verbose_name='Curso', on_delete=models.CASCADE, related_name='announcements')
     title = models.CharField('Título', max_length=100)
     content = models.TextField('Conteúdo')
@@ -126,8 +136,8 @@ class Announcement(models.Model):
 
 
 class Comment(models.Model):
-
-    announcement = models.ForeignKey(Announcement, verbose_name='Anúncio', related_name='comments', on_delete=models.CASCADE)
+    announcement = models.ForeignKey(Announcement, verbose_name='Anúncio', related_name='comments',
+                                     on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='usuário', on_delete=models.CASCADE)
     comment = models.TextField('Comentário')
 
